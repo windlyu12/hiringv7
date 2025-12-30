@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recruitment Poster Tool — Marak-style (Stable PNG Export)</title>
+
+  <!-- Montserrat (hiển thị OK; export PNG vẫn ổn vì html2canvas rasterize text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- IMPORTANT: load html2canvas BEFORE our script (defer = safe) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root{
+      --font: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --radius: 16px;
+
+      /* Light */
+      --bg: #f2f2ef;
+      --panelBg: #ffffff;
+      --panelInk: #0f1115;
+      --line: rgba(15,17,21,.14);
+      --muted: rgba(15,17,21,.68);
+
+      --paper: #f4f4f2;
+      --ink: #0f1115;
+
+      --gold: #c99a3a;
+
+      --shadow: 0 20px 60px rgba(0,0,0,.10);
+
+      /* Hero overlays (luxury) */
+      --heroOverlayTop: rgba(0,0,0,.08);
+      --heroOverlayBot: rgba(0,0,0,.22);
+      --heroVignette: rgba(0,0,0,.22);
+
+      --posterW: 1200px;
+      --heroPosX: 50%;
+      --heroPosY: 50%;
+    }
+
+    [data-theme="dark"]{
+      --bg: #0b0c10;
+      --panelBg: #0f1420;
+      --panelInk: rgba(255,255,255,.92);
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.70);
+
+      --paper: #0e1218;
+      --ink: rgba(255,255,255,.92);
+
+      --gold: #d8b05a;
+
+      --heroOverlayTop: rgba(0,0,0,.20);
+      --heroOverlayBot: rgba(0,0,0,.62);
+      --heroVignette: rgba(0,0,0,.40);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--panelInk);
+    }
+
+    .app{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    /* LEFT PANEL */
+    .panel{
+      background: var(--panelBg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 48px rgba(0,0,0,.06);
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      min-height: calc(100vh - 32px);
+    }
+
+    .panelHeader{
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .panelTitle{
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: .02em;
+      color: var(--panelInk);
+    }
+
+    .seg{
+      display:flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow:hidden;
+      background: rgba(127,127,127,.06);
+    }
+    .seg button{
+      border:0;
+      background: transparent;
+      padding: 7px 10px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor:pointer;
+      color: var(--panelInk);
+      opacity:.72;
+    }
+    .seg button.active{
+      opacity: 1;
+      background: rgba(127,127,127,.10);
+    }
+
+    .panelBody{
+      padding: 12px;
+      overflow:auto;
+    }
+
+    .hint{
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(127,127,127,.92);
+      padding: 10px 10px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      background: rgba(127,127,127,.05);
+      margin-bottom: 12px;
+    }
+
+    label{
+      display:block;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      margin: 12px 0 6px;
+      color: rgba(127,127,127,.92);
+    }
+
+    input[type="text"], textarea{
+      width:100%;
+      border: 1px solid var(--line);
+      background: rgba(127,127,127,.05);
+      color: var(--panelInk);
+      border-radius: 12px;
+      padding: 10px 10px;
+      font: inherit;
+      outline: none;
+    }
+    textarea{ min-height: 84px; resize: vertical; }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .file{
+      width:100%;
+      border: 1px solid var(--line);
+      background: rgba(127,127,127,.05);
+      color: var(--panelInk);
+      border-radius: 12px;
+      padding: 9px 10px;
+    }
+
+    .counter{
+      font-size: 12px;
+      color: rgba(127,127,127,.92);
+      margin-top: 6px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    input[type="range"]{ width:100%; }
+
+    .branches{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .branchRow{
+      display:grid;
+      grid-template-columns: 18px 1fr;
+      gap: 10px;
+      align-items:center;
+    }
+    .branchRow input[type="checkbox"]{
+      width: 16px; height:16px;
+      accent-color: var(--gold);
+    }
+
+    .actions{
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      display:flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items:center;
+    }
+
+    .btn{
+      border: 1px solid var(--line);
+      background: rgba(127,127,127,.07);
+      color: var(--panelInk);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .btn.primary{
+      border-color: rgba(201,154,58,.55);
+      background: rgba(201,154,58,.16);
+    }
+    .btn.danger{
+      border-color: rgba(255,0,0,.18);
+      background: rgba(255,0,0,.05);
+    }
+
+    /* RIGHT STAGE */
+    .stage{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: calc(100vh - 32px);
+    }
+
+    .stageTop{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(127,127,127,.06);
+      color: rgba(127,127,127,.92);
+    }
+    .stageTop .title{
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: .02em;
+      color: var(--panelInk);
+    }
+    .zoom{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      font-size: 12px;
+      color: rgba(127,127,127,.92);
+    }
+    .zoom input[type="range"]{ width: 180px; }
+
+    .previewWrap{
+      flex:1;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(1100px 700px at 10% 0%, rgba(201,154,58,.12), transparent 60%),
+        rgba(127,127,127,.05);
+      box-shadow: var(--shadow);
+      overflow:auto;
+      padding: 12px;
+    }
+
+    /* ========== POSTER ========== */
+    #poster{
+      width: var(--posterW);
+      height: auto;
+      margin: 0 auto;
+      background: var(--paper);
+      color: var(--ink);
+      display:grid;
+      grid-template-columns: 44% 56%;
+      align-items: stretch;
+      overflow:hidden;
+      border-radius: 0;
+      border: 1px solid var(--line);
+      transform-origin: top center;
+    }
+
+    .pLeft{
+      padding: 0;
+      display:flex;
+      align-items: stretch;
+      height: 100%;
+      border-right: 1px solid var(--line);
+    }
+
+    .hero{
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      margin:0;
+      border:0;
+      border-radius: 0;
+      position: relative;
+      overflow:hidden;
+
+      background:
+        radial-gradient(120% 80% at 50% 18%, rgba(255,255,255,.16), transparent 55%),
+        radial-gradient(130% 90% at 50% 78%, var(--heroVignette), transparent 60%),
+        linear-gradient(180deg, var(--heroOverlayTop), var(--heroOverlayBot)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1600'%3E%3Crect width='100%25' height='100%25' fill='%23dcdcd8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='Arial' font-size='32'%3EUpload%20Hero%20Image%3C/text%3E%3C/svg%3E");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: var(--heroPosX, 50%) var(--heroPosY, 50%);
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='1300'%3E%3Cg fill='none' stroke='%230f1115' stroke-opacity='0.22' stroke-width='2'%3E%3Cpath d='M90 140 h520 v200 h-520 z'/%3E%3Cpath d='M140 220 h410 v120 h-410 z'/%3E%3Cpath d='M120 560 h520 v520 h-520 z'/%3E%3Cpath d='M180 650 h260 v260 h-260 z'/%3E%3Cpath d='M500 650 h110 v260 h-110 z'/%3E%3Cpath d='M140 1140 h520'/%3E%3Cpath d='M140 1180 h420'/%3E%3Cpath d='M140 1220 h300'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      mix-blend-mode: multiply;
+      opacity:.85;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:.14;
+      mix-blend-mode: overlay;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size: 220px 220px;
+    }
+
+    .pRight{
+      padding: 44px 52px 34px;
+      background: var(--paper);
+      display:flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+
+    .logoOnly{
+      position:absolute;
+      top: 26px;
+      right: 34px;
+      width: 70px;
+      height: 70px;
+      display:none;
+      object-fit: contain;
+      background: transparent;
+      border: none;
+    }
+    .logoPH{
+      position:absolute;
+      top: 26px;
+      right: 34px;
+      width: 70px;
+      height: 70px;
+      display:grid;
+      place-items:center;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      color: rgba(15,17,21,.40);
+      text-transform: uppercase;
+    }
+
+    .companyLine{
+      font-weight: 900;
+      letter-spacing: .18em;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: rgba(15,17,21,.78);
+      margin-top: 4px;
+    }
+    .companyName{
+      font-weight: 900;
+      letter-spacing: .28em;
+      font-size: 15px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: -4px;
+    }
+
+    .hiring{
+      margin: 18px 0 0;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      line-height: .92;
+      font-size: 86px;
+      text-transform: uppercase;
+      text-shadow: 0 18px 40px rgba(0,0,0,.14);
+      color: var(--ink);
+    }
+
+    .roleSmall{
+      margin-top: 8px;
+      font-size: 20px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(15,17,21,.70);
+      font-weight: 700;
+    }
+    .roleBig{
+      margin-top: 6px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      font-size: 42px;
+      line-height: 1.03;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .intro{
+      margin-top: 6px;
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: rgba(15,17,21,.68);
+    }
+    .intro .dot{ display:block; margin: 6px 0; }
+
+    .midGrid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .box{
+      border: 2px solid rgba(15,17,21,.55);
+      padding: 18px 18px 14px;
+      background: transparent;
+    }
+
+    .boxTitle{
+      display:inline-block;
+      border: 2px solid rgba(15,17,21,.55);
+      padding: 6px 10px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin: -34px 0 10px;
+      background: var(--paper);
+      color: rgba(15,17,21,.92);
+    }
+
+    .box ul{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: rgba(15,17,21,.88);
+      font-weight: 600;
+    }
+
+    .hr{
+      margin: 14px 0 10px;
+      height: 2px;
+      background: rgba(15,17,21,.55);
+      opacity:.85;
+    }
+
+    .sectionTitle{
+      font-weight: 900;
+      letter-spacing: .14em;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+      color: rgba(15,17,21,.92);
+    }
+
+    .bullets{
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: rgba(15,17,21,.88);
+      font-weight: 600;
+    }
+
+    .meta{
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: rgba(15,17,21,.86);
+      font-weight: 600;
+    }
+    .meta b{
+      display:block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(15,17,21,.68);
+    }
+
+    .contactPills{
+      margin-top: 10px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    .pill{
+      border: 1px solid rgba(15,17,21,.22);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-weight: 900;
+      font-size: 12.5px;
+      background: rgba(255,255,255,.35);
+      white-space: nowrap;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .pill.hot{
+      border-color: rgba(201,154,58,.55);
+      background: rgba(201,154,58,.12);
+    }
+
+    /* clamp */
+    .clamp-2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .clamp-3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .clamp-6{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
+
+    @media (max-width: 980px){
+      .app{ grid-template-columns: 1fr; }
+      .panel{ min-height: auto; }
+      #poster{ width: 980px; }
+      .midGrid{ grid-template-columns: 1fr; }
+    }
+
+    /* Offscreen area for capture (avoid overflow crop) */
+    .captureHost{
+      position: fixed;
+      left: -100000px;
+      top: 0;
+      width: auto;
+      height: auto;
+      pointer-events:none;
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <div class="app">
+    <!-- PANEL -->
+    <aside class="panel">
+      <div class="panelHeader">
+        <div class="panelTitle">Recruitment Poster Tool — Marak-style</div>
+        <div class="seg" role="tablist" aria-label="Theme">
+          <button id="btnLight" class="active" type="button">Light</button>
+          <button id="btnDark" type="button">Dark</button>
+        </div>
+      </div>
+
+      <div class="panelBody">
+        <div class="hint">
+          Cách dùng: điền nội dung → upload hero/logo → chỉnh vị trí hero → bấm <b>Xuất PNG</b>.
+          <br>PNG sẽ chụp đúng node poster, không bị cắt bởi khung preview.
+        </div>
+
+        <label>Vị trí tuyển dụng (in hoa)</label>
+        <input id="inpRole" type="text" maxlength="70" value="NHÂN VIÊN THIẾT KẾ 3D NỘI THẤT" />
+        <div class="counter"><span></span><span id="cRole">0/70</span></div>
+
+        <label>Giới thiệu ngắn (3 dòng)</label>
+        <textarea id="inpIntro" maxlength="320">• New Homes – Công ty thiết kế & thi công nội thất với 5+ năm kinh nghiệm, 1000+ dự án chung cư, nhà phố, văn phòng, biệt thự, … đã triển khai.
+• Thương hiệu uy tín, môi trường làm việc chuyên nghiệp và năng động.
+• Phong cách thiết kế đa dạng, luôn cập nhật xu hướng mới.</textarea>
+        <div class="counter"><span>Tự clamp để không vỡ layout</span><span id="cIntro">0/320</span></div>
+
+        <div class="grid2">
+          <div>
+            <label>Ảnh hero</label>
+            <input id="fileHero" class="file" type="file" accept="image/*" />
+          </div>
+          <div>
+            <label>Logo (tùy chọn)</label>
+            <input id="fileLogo" class="file" type="file" accept="image/*" />
+          </div>
+        </div>
+
+        <label>Vị trí ảnh hero (trái ↔ phải)</label>
+        <input id="heroPosX" type="range" min="0" max="100" value="50" />
+        <div class="counter"><span>0%</span><span id="heroPosXVal">50%</span><span>100%</span></div>
+
+        <label>Vị trí ảnh hero (trên ↔ dưới)</label>
+        <input id="heroPosY" type="range" min="0" max="100" value="50" />
+        <div class="counter"><span>0%</span><span id="heroPosYVal">50%</span><span>100%</span></div>
+
+        <label>Mô tả công việc (mỗi dòng 1 ý)</label>
+        <textarea id="inpJD" maxlength="240">Tư vấn và diễn họa 3D các dự án kiến trúc, nội thất
+Triển khai/bổ kỹ thuật bản vẽ phục vụ thi công</textarea>
+        <div class="counter"><span></span><span id="cJD">0/240</span></div>
+
+        <label>Yêu cầu (mỗi dòng 1 ý)</label>
+        <textarea id="inpReq" maxlength="320">Thành thạo phần mềm thiết kế (AutoCAD, SketchUp, 3Ds Max…)
+Am hiểu vật liệu, ánh sáng, bố cục và thẩm mỹ nội thất
+Tối thiểu 02 năm kinh nghiệm thiết kế kiến trúc/nội thất
+(Ưu tiên ứng viên biết ứng dụng AI trong công việc )</textarea>
+        <div class="counter"><span></span><span id="cReq">0/320</span></div>
+
+        <label>Quyền lợi (mỗi dòng 1 ý)</label>
+        <textarea id="inpBen" maxlength="260">Lương cứng 10 - 15tr + % hoa hồng + Thưởng (Thu nhập 17 - 25tr/tháng)
+Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết, phúc lợi công ty)</textarea>
+        <div class="counter"><span></span><span id="cBen">0/260</span></div>
+
+        <label>Thời gian làm việc</label>
+        <textarea id="inpTime" maxlength="160">8h30p - 12h; 13h30p - 18h (T2 - T6)
+8h30p - 12h; 13h30p - 16h (T7)</textarea>
+        <div class="counter"><span></span><span id="cTime">0/160</span></div>
+
+        <label>Chi nhánh làm việc (tick để hiện)</label>
+        <div class="branches">
+          <div class="branchRow">
+            <input id="ckB1" type="checkbox" checked />
+            <input id="inpB1" type="text" maxlength="120" value="CN1: Tòa SA5 – Vinhomes Smart City, Tây Mỗ, Hà Nội" />
+          </div>
+          <div class="branchRow">
+            <input id="ckB2" type="checkbox" checked />
+            <input id="inpB2" type="text" maxlength="120" value="CN2: Vinhomes Ocean Park, Gia Lâm, Hà Nội" />
+          </div>
+          <div class="branchRow">
+            <input id="ckB3" type="checkbox" checked />
+            <input id="inpB3" type="text" maxlength="120" value="CN3: Thôn Phú Lộc, xã Tuệ Tĩnh, Hải Phòng – Hải Dương cũ" />
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div>
+            <label>Số điện thoại</label>
+            <input id="inpPhone" type="text" maxlength="30" value="0975 918 685" />
+            <div class="counter"><span></span><span id="cPhone">0/30</span></div>
+          </div>
+          <div>
+            <label>Email</label>
+            <input id="inpEmail" type="text" maxlength="60" value="kimthao991729@gmail.com" />
+            <div class="counter"><span></span><span id="cEmail">0/60</span></div>
+          </div>
+        </div>
+
+        <label>Website</label>
+        <input id="inpWeb" type="text" maxlength="60" value="noithatnewhomes.com" />
+        <div class="counter"><span></span><span id="cWeb">0/60</span></div>
+      </div>
+
+      <div class="actions">
+        <button id="btnReset" class="btn danger" type="button">Reset</button>
+        <button id="btnExport" class="btn primary" type="button">Xuất PNG</button>
+      </div>
+    </aside>
+
+    <!-- STAGE -->
+    <main class="stage">
+      <div class="stageTop">
+        <div class="title">Preview — chụp đúng khung poster</div>
+        <div class="zoom">
+          <span>Zoom</span>
+          <input id="zoom" type="range" min="60" max="120" value="92" />
+          <span id="zoomVal">92%</span>
+        </div>
+      </div>
+
+      <div class="previewWrap">
+        <section id="poster" aria-label="Recruitment Poster Preview">
+          <div class="pLeft">
+            <div id="hero" class="hero" aria-label="Hero image"></div>
+          </div>
+
+          <div class="pRight">
+            <img id="logoImg" class="logoOnly" alt="Logo" />
+            <div id="logoPH" class="logoPH">PLACE<br>LOGO</div>
+
+            <div class="companyLine">CÔNG TY CP XÂY DỰNG & NỘI THẤT</div>
+            <div class="companyName">NEWHOMES</div>
+
+            <h1 class="hiring">WE ARE<br>HIRING</h1>
+
+            <div class="roleSmall">PROFESSIONAL</div>
+            <div id="outRole" class="roleBig clamp-2">NHÂN VIÊN THIẾT KẾ 3D NỘI THẤT</div>
+
+            <div id="outIntro" class="intro clamp-6"></div>
+
+            <section class="midGrid" aria-label="Two columns">
+              <div class="box">
+                <div class="boxTitle">MÔ TẢ CÔNG VIỆC</div>
+                <ul id="outJD"></ul>
+              </div>
+              <div class="box">
+                <div class="boxTitle">YÊU CẦU</div>
+                <ul id="outReq"></ul>
+              </div>
+            </section>
+
+            <div class="hr" role="separator"></div>
+
+            <div class="sectionTitle">QUYỀN LỢI</div>
+            <ul id="outBen" class="bullets"></ul>
+
+            <div class="hr" role="separator"></div>
+
+            <div class="meta">
+              <b>THỜI GIAN LÀM VIỆC</b>
+              <div id="outTime" class="clamp-3"></div>
+
+              <b>CHI NHÁNH LÀM VIỆC</b>
+              <div id="outBranches"></div>
+            </div>
+
+            <div class="contactPills" aria-label="Contacts">
+              <div class="pill hot">📞 <span id="outPhone">0975 918 685</span></div>
+              <div class="pill hot">✉️ <span id="outEmail">kimthao991729@gmail.com</span></div>
+              <div class="pill">🌐 <span id="outWeb">noithatnewhomes.com</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="captureHost" class="captureHost" aria-hidden="true"></div>
+
+  <script defer>
+    const $ = (id) => document.getElementById(id);
+
+    function setCounter(inp, counterEl){
+      const max = inp.getAttribute('maxlength');
+      counterEl.textContent = `${inp.value.length}/${max}`;
+    }
+
+    function textToList(text){
+      return (text || "")
+        .split(/\r?\n/)
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function renderList(ul, items){
+      ul.innerHTML = "";
+      items.forEach(t => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    }
+
+    function renderMultiline(el, text){
+      el.innerHTML = (text || "")
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => line.replace(/^•\s?/, "• "))
+        .join("<br>");
+    }
+
+    function setTheme(theme){
+      document.body.setAttribute("data-theme", theme);
+      $("btnLight").classList.toggle("active", theme === "light");
+      $("btnDark").classList.toggle("active", theme === "dark");
+    }
+
+    function loadImageToHero(file){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        $("hero").dataset.bg = "data"; // mark as safe
+        $("hero").style.backgroundImage =
+          `radial-gradient(120% 80% at 50% 18%, rgba(255,255,255,.16), transparent 55%),
+           radial-gradient(130% 90% at 50% 78%, var(--heroVignette), transparent 60%),
+           linear-gradient(180deg, var(--heroOverlayTop), var(--heroOverlayBot)),
+           url("${reader.result}")`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadImageToLogo(file){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        $("logoImg").src = reader.result;
+        $("logoImg").style.display = "block";
+        $("logoPH").style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    const inpRole = $("inpRole");
+    const inpIntro = $("inpIntro");
+    const inpJD = $("inpJD");
+    const inpReq = $("inpReq");
+    const inpBen = $("inpBen");
+    const inpTime = $("inpTime");
+    const inpPhone = $("inpPhone");
+    const inpEmail = $("inpEmail");
+    const inpWeb = $("inpWeb");
+
+    const ckB1 = $("ckB1"), ckB2 = $("ckB2"), ckB3 = $("ckB3");
+    const inpB1 = $("inpB1"), inpB2 = $("inpB2"), inpB3 = $("inpB3");
+
+    function renderBranches(){
+      const lines = [];
+      if(ckB1.checked && inpB1.value.trim()) lines.push(inpB1.value.trim());
+      if(ckB2.checked && inpB2.value.trim()) lines.push(inpB2.value.trim());
+      if(ckB3.checked && inpB3.value.trim()) lines.push(inpB3.value.trim());
+      $("outBranches").innerHTML = lines.length ? lines.join("<br>") : "<span style='opacity:.55'>—</span>";
+    }
+
+    function syncAll(){
+      $("outRole").textContent = inpRole.value.trim() || "";
+      renderMultiline($("outIntro"), inpIntro.value);
+      renderList($("outJD"), textToList(inpJD.value));
+      renderList($("outReq"), textToList(inpReq.value));
+      renderList($("outBen"), textToList(inpBen.value));
+      renderMultiline($("outTime"), inpTime.value);
+
+      $("outPhone").textContent = inpPhone.value.trim() || "";
+      $("outEmail").textContent = inpEmail.value.trim() || "";
+      $("outWeb").textContent = inpWeb.value.trim() || "";
+
+      renderBranches();
+
+      setCounter(inpRole, $("cRole"));
+      setCounter(inpIntro, $("cIntro"));
+      setCounter(inpJD, $("cJD"));
+      setCounter(inpReq, $("cReq"));
+      setCounter(inpBen, $("cBen"));
+      setCounter(inpTime, $("cTime"));
+      setCounter(inpPhone, $("cPhone"));
+      setCounter(inpEmail, $("cEmail"));
+      setCounter(inpWeb, $("cWeb"));
+    }
+
+    [
+      inpRole, inpIntro, inpJD, inpReq, inpBen,
+      inpTime, inpPhone, inpEmail, inpWeb,
+      inpB1, inpB2, inpB3
+    ].forEach(el => el.addEventListener("input", syncAll));
+    [ckB1, ckB2, ckB3].forEach(el => el.addEventListener("change", syncAll));
+
+    $("btnLight").addEventListener("click", () => setTheme("light"));
+    $("btnDark").addEventListener("click", () => setTheme("dark"));
+
+    $("fileHero").addEventListener("change", (e) => loadImageToHero(e.target.files?.[0]));
+    $("fileLogo").addEventListener("change", (e) => loadImageToLogo(e.target.files?.[0]));
+
+    const heroPosX = $("heroPosX");
+    const heroPosY = $("heroPosY");
+
+    function applyHeroPos(){
+      document.documentElement.style.setProperty("--heroPosX", heroPosX.value + "%");
+      document.documentElement.style.setProperty("--heroPosY", heroPosY.value + "%");
+      $("heroPosXVal").textContent = heroPosX.value + "%";
+      $("heroPosYVal").textContent = heroPosY.value + "%";
+    }
+    heroPosX.addEventListener("input", applyHeroPos);
+    heroPosY.addEventListener("input", applyHeroPos);
+
+    const zoom = $("zoom");
+    function applyZoom(){
+      const val = Number(zoom.value);
+      $("zoomVal").textContent = `${val}%`;
+      $("poster").style.transform = `scale(${val/100})`;
+    }
+    zoom.addEventListener("input", applyZoom);
+
+    $("btnReset").addEventListener("click", () => {
+      inpRole.value = "NHÂN VIÊN THIẾT KẾ 3D NỘI THẤT";
+      inpIntro.value = `• New Homes – Công ty thiết kế & thi công nội thất với 5+ năm kinh nghiệm, 1000+ dự án chung cư, nhà phố, văn phòng, biệt thự, … đã triển khai.
+• Thương hiệu uy tín, môi trường làm việc chuyên nghiệp và năng động.
+• Phong cách thiết kế đa dạng, luôn cập nhật xu hướng mới.`;
+      inpJD.value = `Tư vấn và diễn họa 3D các dự án kiến trúc, nội thất
+Triển khai/bổ kỹ thuật bản vẽ phục vụ thi công`;
+      inpReq.value = `Thành thạo phần mềm thiết kế (AutoCAD, SketchUp, 3Ds Max…)
+Am hiểu vật liệu, ánh sáng, bố cục và thẩm mỹ nội thất
+Tối thiểu 02 năm kinh nghiệm thiết kế kiến trúc/nội thất
+(Ưu tiên ứng viên biết ứng dụng AI trong công việc )`;
+      inpBen.value = `Lương cứng 10 - 15tr + % hoa hồng + Thưởng (Thu nhập 17 - 25tr/tháng)
+Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết, phúc lợi công ty)`;
+      inpTime.value = `8h30p - 12h; 13h30p - 18h (T2 - T6)
+8h30p - 12h; 13h30p - 16h (T7)`;
+
+      ckB1.checked = true; ckB2.checked = true; ckB3.checked = true;
+      inpB1.value = "CN1: Tòa SA5 – Vinhomes Smart City, Tây Mỗ, Hà Nội";
+      inpB2.value = "CN2: Vinhomes Ocean Park, Gia Lâm, Hà Nội";
+      inpB3.value = "CN3: Thôn Phú Lộc, xã Tuệ Tĩnh, Hải Phòng – Hải Dương cũ";
+
+      inpPhone.value = "0975 918 685";
+      inpEmail.value = "kimthao991729@gmail.com";
+      inpWeb.value = "noithatnewhomes.com";
+
+      setTheme("light");
+      heroPosX.value = 50; heroPosY.value = 50;
+      applyHeroPos();
+
+      zoom.value = 92;
+      applyZoom();
+
+      $("hero").style.backgroundImage = "";
+      $("hero").dataset.bg = "";
+
+      $("fileHero").value = "";
+
+      $("logoImg").src = "";
+      $("logoImg").style.display = "none";
+      $("logoPH").style.display = "grid";
+      $("fileLogo").value = "";
+
+      syncAll();
+    });
+
+    // --------- EXPORT PNG (STABLE) ----------
+    async function exportPNG(){
+      // Ensure lib loaded
+      if(typeof window.html2canvas !== "function"){
+        alert("Chưa load xong thư viện xuất PNG. Đợi 1-2 giây rồi bấm lại.");
+        return;
+      }
+
+      const node = $("poster");
+      const wrap = node.closest(".previewWrap");
+
+      // Hard guard: if user didn't upload and used URL in background, may CORS-taint.
+      // (We can’t safely export cross-origin background without proper headers.)
+      const heroBg = getComputedStyle($("hero")).backgroundImage || "";
+      if(heroBg.includes("http") && !$("hero").dataset.bg){
+        alert("Hero đang dùng ảnh từ URL (có thể bị CORS). Hãy dùng Upload file ảnh hero để xuất PNG chắc chắn.");
+        return;
+      }
+
+      // Save current UI states
+      const prevTransform = node.style.transform;
+      const prevOrigin = node.style.transformOrigin;
+
+      // Temporarily remove transform so canvas gets full size
+      node.style.transform = "none";
+      node.style.transformOrigin = "top left";
+
+      // Prevent crop by overflow: clone to offscreen host
+      const host = $("captureHost");
+      host.innerHTML = "";
+      const clone = node.cloneNode(true);
+
+      // IMPORTANT: clone must be unscaled and visible to html2canvas (opacity 0 is ok; display none is not)
+      clone.style.transform = "none";
+      clone.style.margin = "0";
+      clone.style.boxShadow = "none";
+
+      host.appendChild(clone);
+
+      // Ensure fonts/layout settled
+      await new Promise(r => requestAnimationFrame(r));
+      await new Promise(r => setTimeout(r, 30));
+
+      try{
+        const canvas = await html2canvas(clone, {
+          backgroundColor: null,
+          scale: 2.5,             // nét nhưng không quá nặng
+          useCORS: false,         // upload = dataURL => không cần CORS
+          allowTaint: false,      // tránh “tainted canvas” surprise
+          logging: false
+        });
+
+        const dataURL = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = dataURL;
+        a.download = "poster.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (err){
+        console.error(err);
+        alert("Xuất PNG lỗi. Nếu bạn đã upload ảnh mà vẫn lỗi: thường do Chrome chặn font/CSS. Hãy thử reload trang và bấm xuất lại.");
+      } finally {
+        host.innerHTML = "";
+        node.style.transform = prevTransform;
+        node.style.transformOrigin = prevOrigin;
+
+        // restore scroll (optional)
+        if(wrap){ /* keep as-is */ }
+      }
+    }
+
+    $("btnExport").addEventListener("click", exportPNG);
+
+    // init
+    setTheme("light");
+    applyHeroPos();
+    applyZoom();
+    syncAll();
+  </script>
+</body>
+</html>
