@@ -314,14 +314,7 @@
       position: relative;
       overflow:hidden;
 
-      background:
-        radial-gradient(120% 80% at 50% 18%, rgba(255,255,255,.16), transparent 55%),
-        radial-gradient(130% 90% at 50% 78%, var(--heroVignette), transparent 60%),
-        linear-gradient(180deg, var(--heroOverlayTop), var(--heroOverlayBot)),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1600'%3E%3Crect width='100%25' height='100%25' fill='%23dcdcd8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='Arial' font-size='32'%3EUpload%20Hero%20Image%3C/text%3E%3C/svg%3E");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: var(--heroPosX, 50%) var(--heroPosY, 50%);
+      
     }
 
     .hero::after{ display:none; }
@@ -333,9 +326,7 @@
       pointer-events:none;
       opacity:.14;
       mix-blend-mode: overlay;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 220px 220px;
+    
     }
 
     .pRight{
