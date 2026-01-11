@@ -37,13 +37,7 @@
       --heroOverlayBot: rgba(0,0,0,.22);
       --heroVignette: rgba(0,0,0,.22);
 
-      /* Poster text colors (for theme switching) */
-      --posterTextStrong: rgba(15,17,21,.92);
-      --posterText: rgba(15,17,21,.88);
-      --posterTextMuted: rgba(15,17,21,.78);
-      --posterTextLight: rgba(15,17,21,.70);
-      --posterTextFaint: rgba(15,17,21,.68);
-      --posterTextPlaceholder: rgba(15,17,21,.40);
+      /* Poster borders */
       --posterBorderStrong: rgba(15,17,21,.55);
       --posterBorderLight: rgba(15,17,21,.22);
 
@@ -69,13 +63,7 @@
       --heroOverlayBot: rgba(0,0,0,.62);
       --heroVignette: rgba(0,0,0,.40);
 
-      /* Poster text colors (bright for dark theme) */
-      --posterTextStrong: #ffffff;
-      --posterText: #ffffff;
-      --posterTextMuted: #ffffff;
-      --posterTextLight: #ffffff;
-      --posterTextFaint: #ffffff;
-      --posterTextPlaceholder: #ffffff;
+      /* Poster borders (bright for dark theme) */
       --posterBorderStrong: rgba(255,255,255,.75);
       --posterBorderLight: rgba(255,255,255,.40);
     }
@@ -383,7 +371,7 @@
       font-size: 10px;
       font-weight: 900;
       letter-spacing: .16em;
-      color: var(--posterTextPlaceholder);
+      color: var(--ink);
       text-transform: uppercase;
     }
 
@@ -392,7 +380,7 @@
       letter-spacing: .18em;
       font-size: 12px;
       text-transform: uppercase;
-      color: var(--posterTextMuted);
+      color: var(--ink);
       margin-top: 4px;
     }
     .companyName{
@@ -420,7 +408,7 @@
       font-size: 20px;
       letter-spacing: .16em;
       text-transform: uppercase;
-      color: var(--posterTextLight);
+      color: var(--ink);
       font-weight: 700;
     }
     .roleBig{
@@ -437,7 +425,7 @@
       margin-top: 6px;
       font-size: 13.5px;
       line-height: 1.75;
-      color: var(--posterTextFaint);
+      color: var(--ink);
     }
     .intro .dot{ display:block; margin: 6px 0; }
 
@@ -465,7 +453,7 @@
       font-size: 12px;
       margin: -34px 0 10px;
       background: var(--paper);
-      color: var(--posterTextStrong);
+      color: var(--ink);
     }
 
     .box ul{
@@ -473,7 +461,7 @@
       padding-left: 18px;
       font-size: 13.5px;
       line-height: 1.85;
-      color: var(--posterText);
+      color: var(--ink);
       font-weight: 600;
     }
 
@@ -490,7 +478,7 @@
       font-size: 12px;
       text-transform: uppercase;
       margin: 0 0 8px;
-      color: var(--posterTextStrong);
+      color: var(--ink);
     }
 
     .bullets{
@@ -498,7 +486,7 @@
       padding-left: 18px;
       font-size: 13.5px;
       line-height: 1.85;
-      color: var(--posterText);
+      color: var(--ink);
       font-weight: 600;
     }
 
@@ -506,7 +494,7 @@
       margin-top: 8px;
       font-size: 13px;
       line-height: 1.65;
-      color: var(--posterText);
+      color: var(--ink);
       font-weight: 600;
     }
     .meta b{
@@ -516,7 +504,7 @@
       font-weight: 900;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--posterTextFaint);
+      color: var(--ink);
     }
 
     .contactPills{
@@ -551,51 +539,6 @@
     .clamp-3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
     .clamp-6{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
 
-    /* ==================== DARK THEME OVERRIDES - MUST BE LAST ==================== */
-    /* Force all poster text to white in dark theme */
-    body[data-theme="dark"] .companyLine,
-    body[data-theme="dark"] .hiring,
-    body[data-theme="dark"] .roleSmall,
-    body[data-theme="dark"] .roleBig,
-    body[data-theme="dark"] .intro,
-    body[data-theme="dark"] .boxTitle,
-    body[data-theme="dark"] .box ul,
-    body[data-theme="dark"] .box ul li,
-    body[data-theme="dark"] .sectionTitle,
-    body[data-theme="dark"] .bullets,
-    body[data-theme="dark"] .bullets li,
-    body[data-theme="dark"] .meta,
-    body[data-theme="dark"] .meta b,
-    body[data-theme="dark"] .meta div,
-    body[data-theme="dark"] .pill,
-    body[data-theme="dark"] .pill span,
-    body[data-theme="dark"] .logoPH,
-    body[data-theme="dark"] #poster div,
-    body[data-theme="dark"] #poster ul,
-    body[data-theme="dark"] #poster li,
-    body[data-theme="dark"] #poster span,
-    body[data-theme="dark"] #poster h1,
-    body[data-theme="dark"] #poster b,
-    body[data-theme="dark"] .pRight,
-    body[data-theme="dark"] .pRight * {
-      color: #ffffff !important;
-    }
-
-    /* Dark theme border overrides */
-    body[data-theme="dark"] .box,
-    body[data-theme="dark"] .boxTitle,
-    body[data-theme="dark"] .hr {
-      border-color: rgba(255,255,255,.75) !important;
-    }
-
-    body[data-theme="dark"] .pill {
-      border-color: rgba(255,255,255,.40) !important;
-    }
-
-    /* Keep gold color for company name */
-    body[data-theme="dark"] .companyName {
-      color: var(--gold) !important;
-    }
 
     @media (max-width: 980px){
       .app{ grid-template-columns: 1fr; }
