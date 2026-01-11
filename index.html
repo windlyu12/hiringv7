@@ -777,6 +777,10 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
            radial-gradient(130% 90% at 50% 78%, var(--heroVignette), transparent 60%),
            linear-gradient(180deg, var(--heroOverlayTop), var(--heroOverlayBot)),
            url("${reader.result}")`;
+        // Set background properties to use CSS variables
+        $("hero").style.backgroundSize = "100%, 100%, 100%, cover";
+        $("hero").style.backgroundPosition = "50% 18%, 50% 78%, center, var(--heroPosX) var(--heroPosY)";
+        $("hero").style.backgroundRepeat = "no-repeat";
       };
       reader.readAsDataURL(file);
     }
@@ -859,6 +863,12 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
       document.documentElement.style.setProperty("--heroPosY", heroPosY.value + "%");
       $("heroPosXVal").textContent = heroPosX.value + "%";
       $("heroPosYVal").textContent = heroPosY.value + "%";
+
+      // If hero has background image loaded, update its position immediately
+      const hero = $("hero");
+      if(hero.dataset.bg === "data"){
+        hero.style.backgroundPosition = `50% 18%, 50% 78%, center, ${heroPosX.value}% ${heroPosY.value}%`;
+      }
     }
     heroPosX.addEventListener("input", applyHeroPos);
     heroPosY.addEventListener("input", applyHeroPos);
@@ -904,6 +914,9 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
       applyZoom();
 
       $("hero").style.backgroundImage = "";
+      $("hero").style.backgroundSize = "";
+      $("hero").style.backgroundPosition = "";
+      $("hero").style.backgroundRepeat = "";
       $("hero").dataset.bg = "";
 
       $("fileHero").value = "";
