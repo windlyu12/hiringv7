@@ -549,6 +549,33 @@
     .clamp-3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
     .clamp-6{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
 
+    /* Dark theme overrides for poster */
+    [data-theme="dark"] .companyLine,
+    [data-theme="dark"] .roleSmall,
+    [data-theme="dark"] .intro,
+    [data-theme="dark"] .boxTitle,
+    [data-theme="dark"] .box ul,
+    [data-theme="dark"] .sectionTitle,
+    [data-theme="dark"] .bullets,
+    [data-theme="dark"] .meta,
+    [data-theme="dark"] .meta b,
+    [data-theme="dark"] .hiring,
+    [data-theme="dark"] .roleBig,
+    [data-theme="dark"] .pill,
+    [data-theme="dark"] .logoPH {
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .box,
+    [data-theme="dark"] .boxTitle,
+    [data-theme="dark"] .hr {
+      border-color: rgba(255,255,255,.75) !important;
+    }
+
+    [data-theme="dark"] .pill {
+      border-color: rgba(255,255,255,.40) !important;
+    }
+
     @media (max-width: 980px){
       .app{ grid-template-columns: 1fr; }
       .panel{ min-height: auto; }
