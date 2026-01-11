@@ -52,6 +52,7 @@
       --heroPosY: 50%;
     }
 
+    body[data-theme="dark"],
     [data-theme="dark"]{
       --bg: #0b0c10;
       --panelBg: #0f1420;
@@ -60,7 +61,7 @@
       --muted: rgba(255,255,255,.70);
 
       --paper: #0e1218;
-      --ink: rgba(255,255,255,.92);
+      --ink: #ffffff;
 
       --gold: #d8b05a;
 
@@ -73,10 +74,21 @@
       --posterText: #ffffff;
       --posterTextMuted: #ffffff;
       --posterTextLight: #ffffff;
-      --posterTextFaint: rgba(255,255,255,.92);
-      --posterTextPlaceholder: rgba(255,255,255,.65);
+      --posterTextFaint: #ffffff;
+      --posterTextPlaceholder: #ffffff;
       --posterBorderStrong: rgba(255,255,255,.75);
       --posterBorderLight: rgba(255,255,255,.40);
+    }
+
+    /* Force all poster text to white in dark theme */
+    body[data-theme="dark"] #poster,
+    body[data-theme="dark"] #poster div,
+    body[data-theme="dark"] #poster ul,
+    body[data-theme="dark"] #poster li,
+    body[data-theme="dark"] #poster span,
+    body[data-theme="dark"] #poster h1,
+    body[data-theme="dark"] #poster b {
+      color: #ffffff !important;
     }
 
     *{ box-sizing:border-box; }
@@ -549,20 +561,7 @@
     .clamp-3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
     .clamp-6{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
 
-    /* Dark theme overrides for poster - simplified approach */
-    body[data-theme="dark"] #poster {
-      color: #ffffff !important;
-    }
-
-    body[data-theme="dark"] #poster *:not(.companyName) {
-      color: #ffffff !important;
-    }
-
-    body[data-theme="dark"] .pRight,
-    body[data-theme="dark"] .pRight *:not(.companyName) {
-      color: #ffffff !important;
-    }
-
+    /* Dark theme border overrides */
     body[data-theme="dark"] .box,
     body[data-theme="dark"] .boxTitle,
     body[data-theme="dark"] .hr {
@@ -571,6 +570,11 @@
 
     body[data-theme="dark"] .pill {
       border-color: rgba(255,255,255,.40) !important;
+    }
+
+    /* Keep gold color for company name */
+    body[data-theme="dark"] .companyName {
+      color: var(--gold) !important;
     }
 
     @media (max-width: 980px){
