@@ -80,34 +80,6 @@
       --posterBorderLight: rgba(255,255,255,.40);
     }
 
-    /* Force all poster text to white in dark theme - target all classes explicitly */
-    body[data-theme="dark"] .companyLine,
-    body[data-theme="dark"] .hiring,
-    body[data-theme="dark"] .roleSmall,
-    body[data-theme="dark"] .roleBig,
-    body[data-theme="dark"] .intro,
-    body[data-theme="dark"] .boxTitle,
-    body[data-theme="dark"] .box ul,
-    body[data-theme="dark"] .box ul li,
-    body[data-theme="dark"] .sectionTitle,
-    body[data-theme="dark"] .bullets,
-    body[data-theme="dark"] .bullets li,
-    body[data-theme="dark"] .meta,
-    body[data-theme="dark"] .meta b,
-    body[data-theme="dark"] .meta div,
-    body[data-theme="dark"] .pill,
-    body[data-theme="dark"] .pill span,
-    body[data-theme="dark"] .logoPH,
-    body[data-theme="dark"] #poster div,
-    body[data-theme="dark"] #poster ul,
-    body[data-theme="dark"] #poster li,
-    body[data-theme="dark"] #poster span,
-    body[data-theme="dark"] #poster h1,
-    body[data-theme="dark"] #poster b,
-    body[data-theme="dark"] .pRight,
-    body[data-theme="dark"] .pRight * {
-      color: #ffffff !important;
-    }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -578,6 +550,36 @@
     .clamp-2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     .clamp-3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
     .clamp-6{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
+
+    /* ==================== DARK THEME OVERRIDES - MUST BE LAST ==================== */
+    /* Force all poster text to white in dark theme */
+    body[data-theme="dark"] .companyLine,
+    body[data-theme="dark"] .hiring,
+    body[data-theme="dark"] .roleSmall,
+    body[data-theme="dark"] .roleBig,
+    body[data-theme="dark"] .intro,
+    body[data-theme="dark"] .boxTitle,
+    body[data-theme="dark"] .box ul,
+    body[data-theme="dark"] .box ul li,
+    body[data-theme="dark"] .sectionTitle,
+    body[data-theme="dark"] .bullets,
+    body[data-theme="dark"] .bullets li,
+    body[data-theme="dark"] .meta,
+    body[data-theme="dark"] .meta b,
+    body[data-theme="dark"] .meta div,
+    body[data-theme="dark"] .pill,
+    body[data-theme="dark"] .pill span,
+    body[data-theme="dark"] .logoPH,
+    body[data-theme="dark"] #poster div,
+    body[data-theme="dark"] #poster ul,
+    body[data-theme="dark"] #poster li,
+    body[data-theme="dark"] #poster span,
+    body[data-theme="dark"] #poster h1,
+    body[data-theme="dark"] #poster b,
+    body[data-theme="dark"] .pRight,
+    body[data-theme="dark"] .pRight * {
+      color: #ffffff !important;
+    }
 
     /* Dark theme border overrides */
     body[data-theme="dark"] .box,
