@@ -632,6 +632,10 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
             <input id="ckB3" type="checkbox" checked />
             <input id="inpB3" type="text" maxlength="120" value="CN3: Thôn Phú Lộc, xã Tuệ Tĩnh, Hải Phòng – Hải Dương cũ" />
           </div>
+          <div class="branchRow">
+            <input id="ckB4" type="checkbox" checked />
+            <input id="inpB4" type="text" maxlength="120" value="CN4: " />
+          </div>
         </div>
 
         <div class="grid2">
@@ -802,14 +806,15 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
     const inpEmail = $("inpEmail");
     const inpWeb = $("inpWeb");
 
-    const ckB1 = $("ckB1"), ckB2 = $("ckB2"), ckB3 = $("ckB3");
-    const inpB1 = $("inpB1"), inpB2 = $("inpB2"), inpB3 = $("inpB3");
+    const ckB1 = $("ckB1"), ckB2 = $("ckB2"), ckB3 = $("ckB3"), ckB4 = $("ckB4");
+    const inpB1 = $("inpB1"), inpB2 = $("inpB2"), inpB3 = $("inpB3"), inpB4 = $("inpB4");
 
     function renderBranches(){
       const lines = [];
       if(ckB1.checked && inpB1.value.trim()) lines.push(inpB1.value.trim());
       if(ckB2.checked && inpB2.value.trim()) lines.push(inpB2.value.trim());
       if(ckB3.checked && inpB3.value.trim()) lines.push(inpB3.value.trim());
+      if(ckB4.checked && inpB4.value.trim()) lines.push(inpB4.value.trim());
       $("outBranches").innerHTML = lines.length ? lines.join("<br>") : "<span style='opacity:.55'>—</span>";
     }
 
@@ -841,9 +846,9 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
     [
       inpRole, inpIntro, inpJD, inpReq, inpBen,
       inpTime, inpPhone, inpEmail, inpWeb,
-      inpB1, inpB2, inpB3
+      inpB1, inpB2, inpB3, inpB4
     ].forEach(el => el.addEventListener("input", syncAll));
-    [ckB1, ckB2, ckB3].forEach(el => el.addEventListener("change", syncAll));
+    [ckB1, ckB2, ckB3, ckB4].forEach(el => el.addEventListener("change", syncAll));
 
     $("btnLight").addEventListener("click", () => setTheme("light"));
     $("btnDark").addEventListener("click", () => setTheme("dark"));
@@ -887,10 +892,11 @@ Hưởng đầy đủ chế độ theo quy định (BHXH, thưởng lễ - Tết
       inpTime.value = `8h30p - 12h; 13h30p - 18h (T2 - T6)
 8h30p - 12h; 13h30p - 16h (T7)`;
 
-      ckB1.checked = true; ckB2.checked = true; ckB3.checked = true;
+      ckB1.checked = true; ckB2.checked = true; ckB3.checked = true; ckB4.checked = true;
       inpB1.value = "CN1: Tòa SA5 – Vinhomes Smart City, Tây Mỗ, Hà Nội";
       inpB2.value = "CN2: Vinhomes Ocean Park, Gia Lâm, Hà Nội";
       inpB3.value = "CN3: Thôn Phú Lộc, xã Tuệ Tĩnh, Hải Phòng – Hải Dương cũ";
+      inpB4.value = "CN4: ";
 
       inpPhone.value = "0975 918 685";
       inpEmail.value = "kimthao991729@gmail.com";
